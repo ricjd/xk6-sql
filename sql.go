@@ -3,6 +3,7 @@ package sql
 import (
 	dbsql "database/sql"
 	"fmt"
+	"sync"
 
 	_ "github.com/denisenkom/go-mssqldb"
 	_ "github.com/go-sql-driver/mysql"
@@ -76,4 +77,25 @@ func (*SQL) Query(db *dbsql.DB, query string, args ...interface{}) ([]keyValue, 
 
 	rows.Close()
 	return result, nil
+}
+
+func (*SQL) WaitGroupQuery(wg *sync.WaitGroup, db, query string, results [][]keyValue, errors []string, id int)  () {
+	defer wg.Done()
+	result, err = SQL.Query(db, query);
+	// not sure about this
+	results = results.append(result, id);
+	errors = errors.append(err, id);
+}
+
+func (*SQL) Queries(db, queries string[]) ([][]keyValue, []string) {
+	var wg sync.WaitGroup
+	// i think this is wrong as well
+	results := make([][]keyValue, 0)
+	errs := make([]string, 0)
+	for id, query := range queries {
+		wg.Add(1)
+    go SQL.WaitGroupQuery(&wg, db, query, results, errors, id)
+	}
+	wg.Wait()
+	return results, errs
 }
