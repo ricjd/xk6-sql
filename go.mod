@@ -1,5 +1,7 @@
 module github.com/ricjd/xk6-sql
 
+replace github.com/grafana/xk6-sql => github.com/ricjd/xk6-sql
+
 go 1.15
 
 require (
