@@ -79,23 +79,21 @@ func (*SQL) Query(db *dbsql.DB, query string, args ...interface{}) ([]keyValue, 
 	return result, nil
 }
 
-func (*SQL) WaitGroupQuery(wg *sync.WaitGroup, db, query string, results [][]keyValue, errors []string, id int)  () {
+func (sql *SQL) WaitGroupQuery(wg *sync.WaitGroup, db *dbsql.DB, query string, results [][]keyValue, errors []error, id int)  () {
 	defer wg.Done()
-	result, err = SQL.Query(db, query);
-	// not sure about this
-	results = results.append(result, id);
-	errors = errors.append(err, id);
+	result, err := sql.Query(db, query);
+	results = append(results, result);
+	errors = append(errors, err);
 }
 
-func (*SQL) Queries(db, queries []string) ([][]keyValue, []string) {
+func (sql *SQL) Queries(db *dbsql.DB, queries []string) ([][]keyValue, []error) {
 	var wg sync.WaitGroup
-	// i think this is wrong as well
 	var results = make([][]keyValue, 0)
-	var errs = make([]string, 0)
+	var errors = make([]error, 0)
 	for id, query := range queries {
 		wg.Add(1)
-		go SQL.WaitGroupQuery(&wg, db, query, results, errors, id)
+		go sql.WaitGroupQuery(&wg, db, query, results, errors, id)
 	}
 	wg.Wait()
-	return results, errs
+	return results, errors
 }
