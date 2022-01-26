@@ -87,11 +87,11 @@ func (*SQL) WaitGroupQuery(wg *sync.WaitGroup, db, query string, results [][]key
 	errors = errors.append(err, id);
 }
 
-func (*SQL) Queries(db, queries string[]) ([][]keyValue, []string) {
+func (*SQL) Queries(db, queries []string) ([][]keyValue, []string) {
 	var wg sync.WaitGroup
 	// i think this is wrong as well
-	results := make([][]keyValue, 0)
-	errs := make([]string, 0)
+	var results = make([][]keyValue, 0)
+	var errs = make([]string, 0)
 	for id, query := range queries {
 		wg.Add(1)
 		go SQL.WaitGroupQuery(&wg, db, query, results, errors, id)
