@@ -94,7 +94,7 @@ func (*SQL) Queries(db, queries string[]) ([][]keyValue, []string) {
 	errs := make([]string, 0)
 	for id, query := range queries {
 		wg.Add(1)
-    go SQL.WaitGroupQuery(&wg, db, query, results, errors, id)
+		go SQL.WaitGroupQuery(&wg, db, query, results, errors, id)
 	}
 	wg.Wait()
 	return results, errs
