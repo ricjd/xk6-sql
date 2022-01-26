@@ -1,6 +1,6 @@
 module github.com/ricjd/xk6-sql
 
-replace github.com/grafana/xk6-sql => github.com/ricjd/xk6-sql
+replace github.com/grafana/xk6-sql => github.com/ricjd/xk6-sql@latest
 
 go 1.15
 
